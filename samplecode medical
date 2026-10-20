@@ -1,0 +1,52 @@
+class MedicalBill:
+    def __init__(self, bill_id: int, patient_name: str, consultation_fee: float):
+        self.bill_id = bill_id
+        self.patient_name = patient_name
+        self.consultation_fee = consultation_fee
+        self.items = []  # List of tuples: (item_name, quantity, unit_price)
+        self.total_amount = 0.0
+
+    def add_service_or_medication(self, item_name: str, quantity: int, unit_price: float):
+        """Add medicines, lab tests, or procedures to the patient's bill."""
+        self.items.append((item_name, quantity, unit_price))
+
+    def calculate_bill(self, tax_rate: float = 0.05):
+        """Calculate total including consultation, items, and tax."""
+        items_total = sum(qty * price for _, qty, price in self.items)
+        subtotal = self.consultation_fee + items_total
+        tax = subtotal * tax_rate
+        self.total_amount = subtotal + tax
+        return self.total_amount
+
+    def generate_invoice(self):
+        """Print a formatted medical invoice."""
+        print("=" * 45)
+        print(f"       HOSPITAL MEDICAL INVOICE       ")
+        print("=" * 45)
+        print(f"Bill ID        : {self.bill_id}")
+        print(f"Patient Name   : {self.patient_name}")
+        print("-" * 45)
+        print(f"Consultation Fee : ${self.consultation_fee:.2f}")
+        print("Additional Services / Medications:")
+        for name, qty, price in self.items:
+            subtotal = qty * price
+            print(f"  - {name} ({qty} x ${price:.2f}) = ${subtotal:.2f}")
+        print("-" * 45)
+        print(f"Total Due (incl. tax) : ${self.total_amount:.2f}")
+        print("=" * 45)
+
+
+# --- Example Usage ---
+if __name__ == "__main__":
+    # Create a new medical bill for a patient
+    patient_bill = MedicalBill(bill_id=101, patient_name="John Doe", consultation_fee=150.00)
+
+    # Add hospital charges (e.g., lab test, prescribed medicines)
+    patient_bill.add_service_or_medication(item_name="Blood Panel Test", quantity=1, unit_price=75.00)
+    patient_bill.add_service_or_medication(item_name="Antibiotics (Pack)", quantity=2, unit_price=20.00)
+
+    # Calculate final total
+    patient_bill.calculate_bill(tax_rate=0.05)
+
+    # Output the invoice
+    patient_bill.generate_invoice()
